@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
+import { loginApi } from "@/src/service/login";
+import { useRouter } from "expo-router";
+import React, { useContext, useEffect, useState } from "react";
 import {
   SafeAreaView,
   TextInput,
@@ -42,11 +45,24 @@ const ButtonText = styled(Text)`
 `;
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { login, loading, isAuthenticated, user } =
+    useContext<AuthContextProps>(AuthContext);
+  console.log(isAuthenticated);
+  const router = useRouter();
+  const [email, setEmail] = useState("edsonteles343@gmail.com");
+  const [password, setPassword] = useState("w1971w");
 
-  const handleSubmit = () => {
-    alert(`Input: ${email} ${password}`);
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated]);
+
+  const handleSubmit = async () => {
+    console.log(`login teste`);
+    console.log("loading de login", loading);
+    await login(email, password);
+    console.log("loading de login2", loading);
   };
 
   return (

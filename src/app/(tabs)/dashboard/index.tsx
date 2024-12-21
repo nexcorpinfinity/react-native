@@ -1,12 +1,14 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import { Link } from 'expo-router'
+import { View, Text, Button } from "react-native";
+import React, { useContext } from "react";
+import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
 
 export default function Dashboard() {
+  const { user } = useContext<AuthContextProps>(AuthContext);
+  console.log("user", user);
   return (
     <View>
-      <Text>Dashboard</Text>
-      <Link href={"/"}>Voltar para home </Link>
+      <Text>Dashboard {user?.name}</Text>
+      
     </View>
-  )
+  );
 }

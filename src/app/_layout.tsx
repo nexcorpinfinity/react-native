@@ -1,13 +1,37 @@
-import { View, Text } from "react-native";
-import React from "react";
-import { Stack } from "expo-router";
+import React, { useContext, useEffect } from "react";
+import { Slot, useRouter } from "expo-router";
+import {
+  AuthContext,
+  AuthContextProps,
+  AuthProvider,
+} from "../context/AuthProvider";
 
-export default function Layout() {
+const InitalLayout = () => {
+  const router = useRouter();
+
+  const { checkAuth, isAuthenticated } = useContext<AuthContextProps>(AuthContext);
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      checkAuth();
+      console.log("isAuthenticated", isAuthenticated);
+      if (!isAuthenticated) {
+        router.replace("/(auth)/login");
+      } else {
+        router.replace("/dashboard");
+      }
+    };
+
+    checkAuthentication();
+  }, []);
+
+  return <Slot />;
+};
+
+export default function RootLayout() {
   return (
-    <Stack>
-      <Stack.Screen name="index" options={{ title: "Home" }} />
-      <Stack.Screen name="login" options={{ title: "Login" }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false}}/>
-    </Stack>
+    <AuthProvider>
+      <InitalLayout />
+    </AuthProvider>
   );
 }

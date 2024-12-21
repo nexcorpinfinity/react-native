@@ -1,17 +1,11 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { Link } from "expo-router";
+import { View, Text, ActivityIndicator } from "react-native";
 
-import styled from "styled-components/native";
-
-export default function Home() {
+export default function Loading() {
   return (
-    <View>
-      <Text>Home</Text>
-      <Link href={"/login"}>Ir para login </Link>
-      <Link href={"/user"}>Ir para user</Link>
-      <Link href={"/user/profile"}>Ir para user profile</Link>
-      <Link href={"/passwods/mypass"}>Ir para minhas senhas</Link>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Carregando...</Text>
+      <ActivityIndicator size={40} color="#0000ff" />
     </View>
   );
 }
