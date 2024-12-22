@@ -54,8 +54,6 @@ export default function CreateUser() {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<string>("user");
 
-  console.log(role);
-
   useEffect(() => {
     if (user?.permission !== "admin") {
       router.push("/dashboard");
@@ -68,8 +66,6 @@ export default function CreateUser() {
       return;
     }
 
-    console.log(name, email, password, role);
-
     try {
       const created = await createUser(name, email, password, role);
 
@@ -77,7 +73,6 @@ export default function CreateUser() {
         alert("Usuário criado com sucesso!");
         router.push("/configuration/users");
       }
-      console.log(created);
     } catch (error) {
       console.log(error);
     }

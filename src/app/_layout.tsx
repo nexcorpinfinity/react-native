@@ -9,17 +9,21 @@ import {
 const InitalLayout = () => {
   const router = useRouter();
 
-  const { checkAuth, isAuthenticated } = useContext<AuthContextProps>(AuthContext);
+  const { checkAuth, isAuthenticated } =
+    useContext<AuthContextProps>(AuthContext);
 
+    // TODO: corrigir essa parte de login ainda nao está bom
   useEffect(() => {
     const checkAuthentication = async () => {
-      checkAuth();
-      console.log("isAuthenticated", isAuthenticated);
-      if (!isAuthenticated) {
-        router.replace("/(auth)/login");
-      } else {
-        router.replace("/dashboard");
-      }
+      setTimeout(() => {
+        const isLogged = checkAuth();
+
+        if (!isAuthenticated && !isLogged) {
+          router.replace("/(auth)/login");
+        } else {
+          router.replace("/dashboard");
+        }
+      }, 2000);
     };
 
     checkAuthentication();

@@ -16,7 +16,7 @@ export interface AuthContextProps {
   isAuthenticated: boolean;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  checkAuth: () => void;
+  checkAuth: () => Promise<boolean | undefined>;
   logout: () => Promise<void>;
 }
 
@@ -25,7 +25,7 @@ export const AuthContext = createContext<AuthContextProps>({
   isAuthenticated: false,
   loading: false,
   login: async () => {},
-  checkAuth: () => {},
+  checkAuth: async () => false,
   logout: async () => {},
 });
 
@@ -41,13 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       const token = await loginApi(email, password);
 
-      console.log(token);
-
       await saveToken("token", token);
 
       const decoded = jwtDecode<DecodedToken>(token);
 
-      console.log(decoded);
+      setUser(decoded);
 
       router.replace("/dashboard");
     } catch (error) {
@@ -62,17 +60,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true);
       const token = await getToken("token");
 
-      console.log(token);
-
-      if (token) {
+      if (token && !user) {
         const decoded = jwtDecode<DecodedToken>(token);
         setUser(decoded);
-      } else {
-        setUser(null);
+        return true;
+      } else if (!token && !user) {
+        logout();
       }
     } catch (error) {
       console.error("Erro ao verificar autenticação:", error);
-      setUser(null);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -91,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    checkAuth();
+    const logged = checkAuth();
   }, []);
 
   return (

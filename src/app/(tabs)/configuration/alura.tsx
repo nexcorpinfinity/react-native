@@ -103,7 +103,7 @@ export default function Alura() {
   }, []);
 
   const copyEmail = (email: string) => {
-    Clipboard.setString(email);
+    Clipboard.setStringAsync(email);
     Alert.alert(
       "Email Copiado",
       "O email foi copiado para a área de transferência."
@@ -111,7 +111,7 @@ export default function Alura() {
   };
 
   const copySenha = (senha: string) => {
-    Clipboard.setString(senha);
+    Clipboard.setStringAsync(senha);
     Alert.alert(
       "Senha Copiada",
       "A senha foi copiada para a área de transferência."
@@ -154,7 +154,7 @@ export default function Alura() {
                   <CopyIcon name="content-copy" size={16} />
                 </Button>
               </TitlesDiv>
-              <Emails>{email.senha}</Emails>
+              <Emails>{email.senha && '***********'}</Emails>
             </EmailDiv>
           </EmailInfo>
 

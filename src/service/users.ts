@@ -52,9 +52,29 @@ async function getAllUsers() {
   }
 }
 
-async function deletedUserByAdmin(id: string) {
+async function updateProfile(
+  updateData: { name: string; email: string; password: string; permission: string },
+  id?: string
+) {
   try {
-    const data = await api.get("/users");
+    if (id) {
+      const data = await api.put(`/users?id=${id}`, { 
+        name: updateData.name,
+        email: updateData.email,
+        password: updateData.password,
+        permission: updateData.permission,
+      });
+
+      return data.data;
+    }
+
+    const data = await api.put(`/users`, { 
+        name: updateData.name,
+        email: updateData.email,
+        password: updateData.password,
+        permission: updateData.permission,
+      });
+
 
     return data.data;
   } catch (error) {
@@ -62,4 +82,20 @@ async function deletedUserByAdmin(id: string) {
   }
 }
 
-export { getAllUsers, loginApi, createUser, getProfileUser };
+async function deletedUserByAdmin(id: string) {
+  try {
+    const data = await api.delete(`/users?id=${id}`);
+    return data.data;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export {
+  getAllUsers,
+  loginApi,
+  createUser,
+  getProfileUser,
+  deletedUserByAdmin,
+  updateProfile,
+};

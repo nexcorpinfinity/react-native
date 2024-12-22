@@ -47,10 +47,10 @@ const ButtonText = styled(Text)`
 export default function Login() {
   const { login, loading, isAuthenticated, user } =
     useContext<AuthContextProps>(AuthContext);
-  console.log(isAuthenticated);
+    
   const router = useRouter();
-  const [email, setEmail] = useState("edsonteles343@gmail.com");
-  const [password, setPassword] = useState("w1971w");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     if (isAuthenticated && user) {
@@ -60,7 +60,7 @@ export default function Login() {
 
   const handleSubmit = async () => {
     if (!email || !password) {
-        return alert("Preencha todos os campos");
+      return alert("Preencha todos os campos");
     }
     await login(email, password);
   };

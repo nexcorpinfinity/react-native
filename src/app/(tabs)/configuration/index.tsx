@@ -3,9 +3,7 @@ import React, { useContext } from "react";
 import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
 import styled from "styled-components/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import {
-  ConfigurationLinks,
-} from "@/src/components/ConfigurationLinks";
+import { ConfigurationLinks } from "@/src/components/ConfigurationLinks";
 
 export const HeaderNameProfile = styled(View)`
   padding: 10px;
@@ -90,9 +88,9 @@ export default function Configuration() {
           <FontAwesome name="user-o" size={34} color="black" />
         </IconContainer>
         <TitleProfile>
-          <NameProfile>{user?.name}</NameProfile>
+          <NameProfile>{user?.name ? user.name : 'Nome'}</NameProfile>
           <PermissionProfile>
-            {user?.permission === "admin" ? "Administrador" : ""}
+            {user?.permission === "admin" ? "Administrador" : "Usuário"}
           </PermissionProfile>
         </TitleProfile>
       </HeaderNameProfile>

@@ -1,7 +1,12 @@
 import { View, Text, ActivityIndicator, SafeAreaView } from "react-native";
 import React, { useContext, useEffect } from "react";
-import { Link, useLocalSearchParams } from "expo-router";
-import { getProfileUser } from "@/src/service/users";
+import {
+  Link,
+  RelativePathString,
+  useLocalSearchParams,
+  useRouter,
+} from "expo-router";
+import { deletedUserByAdmin, getProfileUser } from "@/src/service/users";
 import { AuthContext } from "@/src/context/AuthProvider";
 import styled from "styled-components/native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -90,7 +95,7 @@ export default function Profile() {
   const { logout, user } = useContext(AuthContext);
   const { id } = useLocalSearchParams();
   const [loading, setLoading] = React.useState(false);
-  const [loadingDate, setLoadingDate] = React.useState(false);
+  const router = useRouter();
 
   const [userProfile, setUserProfile] = React.useState<IUsers | null>(null);
 
@@ -99,6 +104,7 @@ export default function Profile() {
       const sair = async () => await logout();
       sair();
     }
+
     async function getProfile() {
       setLoading(true);
 
@@ -120,6 +126,22 @@ export default function Profile() {
     ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(
       date.getSeconds()
     ).padStart(2, "0")}`;
+  };
+
+  const convertPath = (routePath: string): RelativePathString => {
+    if (routePath.startsWith("/")) {
+      return routePath.slice(1) as RelativePathString;
+    }
+
+    return routePath as RelativePathString;
+  };
+
+  const handleDeleteAccount = async (id: string) => {
+    const deleted = await deletedUserByAdmin(id);
+
+    if (deleted.success === true) {
+      router.push("/(tabs)/configuration/users");
+    }
   };
 
   return (
@@ -159,12 +181,22 @@ export default function Profile() {
       </Description>
 
       <ButtonContainer>
-        <Button onPress={() => {}}>
+        <Button
+          onPress={() => {
+            router.push(
+              convertPath(
+                `/(tabs)/configuration/editprofile/${userProfile?._id}`
+              )
+            );
+          }}>
           <ButtonText>Editar</ButtonText>
         </Button>
 
         {user?.permission === "admin" && id !== user.id && (
-          <Button onPress={() => {}}>
+          <Button
+            onPress={() => {
+              handleDeleteAccount(String(id));
+            }}>
             <ButtonText>Deletar</ButtonText>
           </Button>
         )}

@@ -14,7 +14,7 @@ import { getAllUsers } from "@/src/service/users";
 import { FontAwesome } from "@expo/vector-icons";
 
 export const CardEmails = styled(View)`
-  padding: 15px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 12px;
   margin-bottom: 10px;
@@ -32,6 +32,7 @@ export const Titles = styled(Text)`
 
 export const ContentDiv = styled(View)`
   flex-direction: row;
+  align-items: center;
   gap: 10px;
 `;
 
@@ -48,6 +49,9 @@ export const IconContainer = styled(View)`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #ccc;
+  width: 40px;
+  height: 40px;
 `;
 
 export const InputContainer = styled(View)`
@@ -145,6 +149,7 @@ export default function Users() {
             </IconContainer>
 
             <PermissionDiv>
+              <Titles>{user.name}</Titles>
               <Titles>{user.email}</Titles>
               <PermissionTitle>
                 {user.permission === "admin" ? "Administrador" : "User"}

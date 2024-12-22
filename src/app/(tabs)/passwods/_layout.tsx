@@ -1,9 +1,9 @@
 import { Stack } from "expo-router";
 
-export default function Layout() {
+export default function PasswordLayout() {
   return (
     <Stack >
-      <Stack.Screen name="mypass" options={{ title: "Minhas Senhas" }} />
+      <Stack.Screen name="index" options={{ title: "Minha senhas" }} />
     </Stack>
   );
 }

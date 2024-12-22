@@ -10,6 +10,12 @@ export default function UserLayout() {
           title: "Perfil",
         }}
       />
+      <Stack.Screen
+        name="editprofile/[id]"
+        options={{
+          title: "Editar Perfil",
+        }}
+      />
       <Stack.Screen name="users" options={{ title: "Usuários" }} />
       <Stack.Screen name="create" options={{ title: "Criar Usuário" }} />
       <Stack.Screen name="alura" options={{ title: "Contas do alura" }} />
