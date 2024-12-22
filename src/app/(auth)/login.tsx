@@ -1,5 +1,4 @@
 import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
-import { loginApi } from "@/src/service/login";
 import { useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
@@ -8,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import styled from "styled-components/native";
 
@@ -15,7 +15,7 @@ const Container = styled(SafeAreaView)`
   flex: 1;
   justify-content: center;
   align-items: center;
-  background-color: #f3f4f6;
+  background-color: #ffffff;
 `;
 
 const InputContainer = styled(View)`
@@ -59,10 +59,10 @@ export default function Login() {
   }, [isAuthenticated]);
 
   const handleSubmit = async () => {
-    console.log(`login teste`);
-    console.log("loading de login", loading);
+    if (!email || !password) {
+        return alert("Preencha todos os campos");
+    }
     await login(email, password);
-    console.log("loading de login2", loading);
   };
 
   return (
@@ -80,7 +80,13 @@ export default function Login() {
           secureTextEntry={true}
         />
         <SubmitButton onPress={handleSubmit}>
-          <ButtonText>Login</ButtonText>
+          <ButtonText>
+            {loading ? (
+              <ActivityIndicator size={32} color="#ffffff" />
+            ) : (
+              "Login"
+            )}
+          </ButtonText>
         </SubmitButton>
       </InputContainer>
     </Container>

@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { jwtDecode } from "jwt-decode";
 import { useRouter } from "expo-router";
-import { loginApi } from "../service/login";
+import { loginApi } from "../service/users";
 import { deleteToken, getToken, saveToken } from "../storage/localStorage";
 
 interface DecodedToken {
