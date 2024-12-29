@@ -7,43 +7,6 @@ import { ConfigurationLinks } from "@/src/components/ConfigurationLinks";
 import Toast from "react-native-toast-message";
 import { getProfileUser } from "@/src/service/users";
 
-export const HeaderNameProfile = styled(View)`
-    padding: 10px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-`;
-
-export const NameProfile = styled(Text)`
-    font-size: 17px;
-    font-weight: bold;
-`;
-
-export const PermissionProfile = styled(Text)`
-    font-size: 13px;
-`;
-
-export const TitleProfile = styled.View`
-    flex-direction: column;
-`;
-
-export const IconContainer = styled(View)`
-    background-color: #d6d6d6;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`;
-
-const OptionsLinks = styled(ScrollView)`
-    margin-top: 10px;
-`;
-
 const routeConfigUser = [
     {
         title: "Dados da sua conta",
@@ -55,13 +18,6 @@ const routeConfigUser = [
 ];
 
 const routeConfigAdmin = [
-    // {
-    //     title: "Criar um novo usuário",
-    //     description: "Criação de um novo usuário para o aplicativo",
-    //     icon: "user-plus",
-    //     iconLib: "Feather",
-    //     routePath: "/(tabs)/configuration/create",
-    // },
     {
         title: "Todos Usuários",
         description: "Todos usuários da plataforma",
@@ -96,8 +52,6 @@ export default function Configuration() {
 
         getProfile();
     }, []);
-
-    console.log(userLogged);
 
     return (
         <SafeAreaView
@@ -150,3 +104,40 @@ export default function Configuration() {
         </SafeAreaView>
     );
 }
+
+export const HeaderNameProfile = styled(View)`
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+`;
+
+export const NameProfile = styled(Text)`
+    font-size: 17px;
+    font-weight: bold;
+`;
+
+export const PermissionProfile = styled(Text)`
+    font-size: 13px;
+`;
+
+export const TitleProfile = styled.View`
+    flex-direction: column;
+`;
+
+export const IconContainer = styled(View)`
+    background-color: #d6d6d6;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const OptionsLinks = styled(ScrollView)`
+    margin-top: 10px;
+`;

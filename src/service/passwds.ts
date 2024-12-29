@@ -1,17 +1,20 @@
 import { api } from "./api";
 
-async function getAllPasswd(id?: string) {
+async function getAllPasswd(secure_code: string, id?: string) {
     try {
         if (id) {
-            const data = await api.get(`/passwd?id=${id}`);
-            return data.data;
+            const { data } = await api.get(
+                `/passwd?secret_code=${secure_code}`
+            );
+            return data;
         }
 
-        const data = await api.get("/passwd");
+        const { data } = await api.get(`/passwd?secret_code=${secure_code}`);
 
-        return data.data;
-    } catch (error) {
+        return data;
+    } catch (error: any) {
         console.log(error);
+        return error.response;
     }
 }
 
@@ -35,28 +38,39 @@ async function getAllPasswdAdminCount() {
     }
 }
 
-async function createPasswd(name: string, password: string) {
+async function createPasswd(
+    name: string,
+    login_email: string,
+    password: string
+) {
     try {
-        const data = await api.post("/passwd", {
+        const { data } = await api.post("/passwd", {
             name: name,
+            login_email: login_email,
             password: password,
         });
-        console.log(data, "123123123");
-        return { data: data.data, status: data.status };
+
+        return data;
     } catch (error: any) {
-        return { status: 400, data: error.response.data.error };
+        return error.response;
     }
 }
 
-async function updatePasswd(id: string, name: string, password: string) {
+async function updatePasswd(
+    id: string,
+    name: string,
+    login_email: string,
+    password: string
+) {
     try {
-        const data = await api.put(`/passwd/${id}`, {
+        const { data } = await api.put(`/passwd/${id}`, {
             name: name,
+            login_email: login_email,
             password: password,
         });
-        return { data: data.data, status: data.status };
-    } catch (error) {
-        console.log(error);
+        return data;
+    } catch (error: any) {
+        return error.response;
     }
 }
 

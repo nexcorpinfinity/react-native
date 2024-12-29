@@ -32,6 +32,27 @@ async function createUser(
     }
 }
 
+async function createSecureCode(code: string) {
+    try {
+        const { data } = await api.post("/users/set-code", {
+            secure_code: code,
+        });
+
+        return data;
+    } catch (error: any) {
+        return error.response;
+    }
+}
+
+async function getHashCode(code: string) {
+    try {
+        const { data } = await api.get(`/users/get-code?code=${code}`);
+        return data;
+    } catch (error: any) {
+        return error.response;
+    }
+}
+
 async function getProfileUser(id: string) {
     try {
         const data = await api.get(`/users/profile-user?id=${id}`);
@@ -111,5 +132,7 @@ export {
     getProfileUser,
     deletedUserByAdmin,
     updateProfile,
-    getAllUsersCount
+    getAllUsersCount,
+    createSecureCode,
+    getHashCode,
 };

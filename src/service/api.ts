@@ -1,19 +1,23 @@
 import axios from "axios";
 import { deleteToken, getToken } from "../storage/localStorage";
 
+const baseUrlLocal = process.env.EXPO_PUBLIC_API_URL_LOCAL;
+const baseUrlProduction = process.env.EXPO_PUBLIC_API_URL_PRODUCTION;
+const production = process.env.EXPO_PUBLIC_APP;
+
 const api = axios.create({
-    // baseURL: `https://app-passwd.vercel.app/api/v1`,
-    baseURL: `http://172.19.177.100:3001/api/v1`,
+    baseURL: `${
+        production === "PRODUCTION" ? baseUrlProduction : baseUrlLocal
+    }`,
 });
+
+console.log(production === "PRODUCTION" ? baseUrlProduction : baseUrlLocal);
 
 api.interceptors.request.use(async (config) => {
     const token = await getToken("token");
 
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
-    } else {
-        // deleta o token para q n tenha token invalido 
-        // await deleteToken("token");
     }
 
     return config;

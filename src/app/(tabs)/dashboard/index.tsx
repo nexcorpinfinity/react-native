@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
 import { useNavigation } from "expo-router";
 import styled from "styled-components/native";
-import { getAllUsersCount } from "@/src/service/users";
+import { getAllUsersCount, getProfileUser } from "@/src/service/users";
 import {
     getAllPasswdAdminCount,
     getAllPasswdCount,
@@ -16,18 +16,21 @@ export default function Dashboard() {
     const [passwordCount, setPasswordCount] = useState<number>(0);
     const [passwordCountAllUsers, setPasswordCountAllUsers] =
         useState<number>(0);
+    const [nameUser, setNameUser] = useState("");
 
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerTitle: user?.name ? `Olá, ${user?.name}` : "Dashboard",
+            headerTitle: nameUser ? `Olá, ${nameUser}` : "Dashboard",
         });
-    }, [user]);
+    }, [nameUser]);
 
     useEffect(() => {
         async function getAllDataDash() {
             const allUsers = await getAllUsersCount();
             const allPasswds = await getAllPasswdCount();
             const allPasswdsByAdmin = await getAllPasswdAdminCount();
+            const getDataUser = await getProfileUser(String(user?.id));
+            setNameUser(getDataUser.data[0].user.name)
             setUserCount(allUsers.data[0].count);
             setPasswordCount(allPasswds.data[0].count);
             setPasswordCountAllUsers(allPasswdsByAdmin.data[0].count);

@@ -28,7 +28,7 @@ export default function TabsLayout() {
                     },
                 }}
             />
-            <Tabs.Screen
+            {/* <Tabs.Screen
                 name="notes"
                 options={{
                     headerShown: false,
@@ -43,7 +43,7 @@ export default function TabsLayout() {
                         marginTop: 5,
                     },
                 }}
-            />
+            /> */}
             <Tabs.Screen
                 name="passwods"
                 options={{

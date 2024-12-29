@@ -29,3 +29,21 @@ export const deleteCredentials = async () => {
     await SecureStore.deleteItemAsync("password");
 };
 
+export const getSecureCode = async () => {
+    const secureCode = await SecureStore.getItemAsync("secure_code");
+    const hashSecureCode = await SecureStore.getItemAsync("hash_secure_code");
+    return { secureCode, hashSecureCode };
+};
+
+export const saveSecureCode = async (
+    secure_code: string,
+    hash_secure_code: string
+) => {
+    await SecureStore.setItemAsync("secure_code", secure_code);
+    await SecureStore.setItemAsync("hash_secure_code", hash_secure_code);
+};
+
+export const deleteSecureCode = async () => {
+    await SecureStore.deleteItemAsync("secure_code");
+    await SecureStore.deleteItemAsync("hash_secure_code");
+};
