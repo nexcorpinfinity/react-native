@@ -1,4 +1,11 @@
-import { View, Text, Button, SafeAreaView, ScrollView } from "react-native";
+import {
+    View,
+    Text,
+    Button,
+    SafeAreaView,
+    ScrollView,
+    RefreshControl,
+} from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
 import styled from "styled-components/native";
@@ -40,18 +47,25 @@ export default function Configuration() {
         name: "",
         permission: "",
     });
+    const [refresh, setRefreshing] = useState(false);
 
+    async function getProfile() {
+        const userApi = await getProfileUser(String(user?.id));
+        setUserLogged({
+            name: userApi.data[0].user.name,
+            permission: userApi.data[0].user.permission,
+        });
+    }
     useEffect(() => {
-        async function getProfile() {
-            const userApi = await getProfileUser(String(user?.id));
-            setUserLogged({
-                name: userApi.data[0].user.name,
-                permission: userApi.data[0].user.permission,
-            });
-        }
 
         getProfile();
     }, []);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getProfile();
+        setRefreshing(false);
+    };
 
     return (
         <SafeAreaView
@@ -74,7 +88,14 @@ export default function Configuration() {
                 </TitleProfile>
             </HeaderNameProfile>
 
-            <OptionsLinks>
+            <OptionsLinks
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refresh}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 {routeConfigUser.map((route, index) => (
                     <ConfigurationLinks
                         key={index}

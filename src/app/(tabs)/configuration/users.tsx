@@ -7,6 +7,7 @@ import {
     View,
     ActivityIndicator,
     TextInput,
+    RefreshControl,
 } from "react-native";
 import styled from "styled-components/native";
 
@@ -28,6 +29,7 @@ export default function Users() {
     const [users, setUsers] = useState<IUsers[]>([]);
     const [loading, setLoading] = useState(false);
     const [search, setSearch] = useState<string>("");
+    const [refresh, setRefreshing] = useState(false);
 
     useEffect(() => {
         if (user?.permission !== "admin") {
@@ -35,14 +37,14 @@ export default function Users() {
         }
     }, [user]);
 
-    useEffect(() => {
-        async function getAllUser() {
-            setLoading(true);
-            const obj = await getAllUsers();
-            setUsers(obj.data[0].users);
-            setLoading(false);
-        }
+    async function getAllUser() {
+        setLoading(true);
+        const obj = await getAllUsers();
+        setUsers(obj.data[0].users);
+        setLoading(false);
+    }
 
+    useEffect(() => {
         getAllUser();
     }, []);
 
@@ -52,6 +54,12 @@ export default function Users() {
             user.name.toLowerCase().includes(search.toLowerCase())
     );
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getAllUser();
+        setRefreshing(false);
+    };
+
     return (
         <ScrollView
             style={{
@@ -59,6 +67,9 @@ export default function Users() {
                 padding: 20,
                 backgroundColor: "#fff",
             }}
+            refreshControl={
+                <RefreshControl refreshing={refresh} onRefresh={onRefresh} />
+            }
         >
             <InputContainer>
                 <InputField

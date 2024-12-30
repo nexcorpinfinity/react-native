@@ -1,4 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, ScrollView, RefreshControl } from "react-native";
 import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { AuthContext, AuthContextProps } from "@/src/context/AuthProvider";
 import { useNavigation } from "expo-router";
@@ -17,6 +17,7 @@ export default function Dashboard() {
     const [passwordCountAllUsers, setPasswordCountAllUsers] =
         useState<number>(0);
     const [nameUser, setNameUser] = useState("");
+    const [refreshing, setRefreshing] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -24,28 +25,37 @@ export default function Dashboard() {
         });
     }, [nameUser]);
 
-    useEffect(() => {
-        async function getAllDataDash() {
-            if (user?.permission === "admin") {
-                const allUsers = await getAllUsersCount();
-                const allPasswdsByAdmin = await getAllPasswdAdminCount();
-                
-                setPasswordCountAllUsers(allPasswdsByAdmin.data[0].count);
-                setUserCount(allUsers.data[0].count);
-            }
+    const fetchDashboardData = async () => {
+        if (user?.permission === "admin") {
+            const allUsers = await getAllUsersCount();
+            const allPasswdsByAdmin = await getAllPasswdAdminCount();
 
-            const allPasswds = await getAllPasswdCount();
-            const getDataUser = await getProfileUser(String(user?.id));
-            setNameUser(getDataUser.data[0].user.name);
-            setPasswordCount(allPasswds.data[0].count);
+            setPasswordCountAllUsers(allPasswdsByAdmin.data[0]?.count || 0);
+            setUserCount(allUsers.data[0]?.count || 0);
         }
 
-        getAllDataDash();
+        const allPasswds = await getAllPasswdCount();
+        const getDataUser = await getProfileUser(String(user?.id));
+        setNameUser(getDataUser.data[0]?.user?.name || "Usuário");
+        setPasswordCount(allPasswds.data[0]?.count || 0);
+    };
+
+    useEffect(() => {
+        fetchDashboardData();
     }, [user]);
+
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await fetchDashboardData();
+        setRefreshing(false);
+    };
 
     return (
         <ScrollView
             style={{ flex: 1, padding: 15, backgroundColor: "#ffffff" }}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
         >
             <View>
                 <WelcomeText>Meu Dashboard</WelcomeText>
@@ -56,23 +66,19 @@ export default function Dashboard() {
                     <>
                         <Block>
                             <BlockTitle>Usuários</BlockTitle>
-                            <BlockValue>{userCount ? userCount : 0}</BlockValue>
+                            <BlockValue>{userCount || 0}</BlockValue>
                         </Block>
 
                         <Block>
                             <BlockTitle>Total de Senhas Cadastradas</BlockTitle>
-                            <BlockValue>
-                                {passwordCountAllUsers
-                                    ? passwordCountAllUsers
-                                    : 0}
-                            </BlockValue>
+                            <BlockValue>{passwordCountAllUsers || 0}</BlockValue>
                         </Block>
                     </>
                 )}
 
                 <Block>
                     <BlockTitle>Suas Senhas</BlockTitle>
-                    <BlockValue>{passwordCount ? passwordCount : 0}</BlockValue>
+                    <BlockValue>{passwordCount || 0}</BlockValue>
                 </Block>
 
                 <Block>

@@ -14,6 +14,7 @@ import {
     TextInput,
     Button,
     Alert,
+    RefreshControl,
 } from "react-native";
 import styled from "styled-components/native";
 import { FontAwesome } from "@expo/vector-icons";
@@ -31,7 +32,6 @@ import {
 import ModalComponent from "@/src/components/Modal";
 import Toast from "react-native-toast-message";
 import * as Clipboard from "expo-clipboard";
-
 export default function MyPasswd() {
     const { user } = useContext<AuthContextProps>(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -44,13 +44,16 @@ export default function MyPasswd() {
     const [modalCreatePasswd, setModalCreatePasswd] = useState<boolean>(false);
     const [modalEditPasswd, setModalEditPasswd] = useState<boolean>(false);
     const [modalViewPasswd, setModalViewPasswd] = useState<boolean>(false);
-
+    const [refreshing, setRefreshing] = useState(false);
     const [haveSecureCode, setHaveSecureCode] = useState({
         haveHashSave: false,
         haveCodeSave: false,
         haveCredentialInDB: false,
     });
 
+    const [loadingCreateNew, setLoadingCreteNew] = useState(false);
+    const [loadingEdit, setLoadingEdit] = useState(false);
+    const [loadingDelete, setLoadingDelete] = useState(false);
     const [createCode, setCreateCode] = useState("");
     const [sendCodeForGetHashCode, setSendCodeForGetHashCode] = useState("");
     const [createNewPasswd, setCreateNewPasswd] = useState({
@@ -201,6 +204,7 @@ export default function MyPasswd() {
             return Alert.alert("Por favor digite a senha");
         }
 
+        setLoadingCreteNew(true);
         try {
             const createdNew = await createPasswd(
                 createNewPasswd.name,
@@ -219,12 +223,15 @@ export default function MyPasswd() {
                 password: "",
             });
             getAllPasswds();
+            setLoadingCreteNew(false);
+
             return Toast.show({
                 type: "success",
                 text1: "Senha criada com sucesso",
             });
         } catch (error) {
             console.log(error);
+            setLoadingCreteNew(false);
             return Alert.alert("Ocorreu algum erro na hora de salvar");
         }
     };
@@ -290,8 +297,7 @@ export default function MyPasswd() {
 
     const editPasswds = async () => {
         try {
-            console.log(editPasswd);
-
+            setLoadingEdit(true);
             const dataUpdate = await updatePasswd(
                 editPasswd.id,
                 editPasswd.name,
@@ -303,12 +309,16 @@ export default function MyPasswd() {
                 !dataUpdate.data.success &&
                 dataUpdate.data.message === "Nome de senha já existe"
             ) {
+                setLoadingEdit(false);
+
                 return Alert.alert(dataUpdate.data.message);
             }
 
+            setLoadingEdit(false);
             setModalEditPasswd(false);
             getAllPasswds();
         } catch (error) {
+            setLoadingEdit(false);
             return Alert.alert("Ocorreu algum error");
         }
     };
@@ -359,10 +369,13 @@ export default function MyPasswd() {
                     text: "Sim",
                     onPress: async () => {
                         try {
+                            setLoadingDelete(true);
                             await deletePasswd(String(id));
                             setModalViewPasswd(false);
+                            setLoadingDelete(false);
                             getAllPasswds();
                         } catch (error) {
+                            setLoadingDelete(false);
                             Alert.alert("Erro ao apagar a senha");
                         }
                     },
@@ -371,8 +384,19 @@ export default function MyPasswd() {
         );
     };
 
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await getAllPasswds();
+        setRefreshing(false);
+    };
+
     return (
-        <ScrollView style={{ flex: 1, padding: 15, backgroundColor: "white" }}>
+        <ScrollView
+            style={{ flex: 1, padding: 15, backgroundColor: "white" }}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+        >
             <Toast />
             <InputContainer
                 style={{
@@ -491,7 +515,13 @@ export default function MyPasswd() {
                         />
                     </ContentCode>
                     <PressableButton onPress={() => submitNewPasswdSend()}>
-                        <ButtonText>Salvar</ButtonText>
+                        <ButtonText>
+                            {loadingCreateNew ? (
+                                <ActivityIndicator size={22} color="#ffffff" />
+                            ) : (
+                                "Salvar"
+                            )}
+                        </ButtonText>
                     </PressableButton>
                 </ViewSecretCode>
             </ModalComponent>
@@ -527,7 +557,13 @@ export default function MyPasswd() {
                         />
                     </ContentCode>
                     <PressableButton onPress={() => editPasswds()}>
-                        <ButtonText>Editar</ButtonText>
+                        <ButtonText>
+                            {loadingEdit ? (
+                                <ActivityIndicator size={22} color="#ffffff" />
+                            ) : (
+                                "Editar"
+                            )}
+                        </ButtonText>
                     </PressableButton>
                 </ViewSecretCode>
             </ModalComponent>
@@ -613,7 +649,13 @@ export default function MyPasswd() {
                     style={{ backgroundColor: "red" }}
                     onPress={() => handleDeletePassword(viewerPasswd.id)}
                 >
-                    <ButtonText>Apagar</ButtonText>
+                    <ButtonText>
+                        {loadingDelete ? (
+                            <ActivityIndicator size={22} color="#ffffff" />
+                        ) : (
+                            "Apagar"
+                        )}
+                    </ButtonText>
                 </PressableButton>
             </ModalComponent>
         </ScrollView>
