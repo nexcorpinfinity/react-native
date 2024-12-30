@@ -26,14 +26,18 @@ export default function Dashboard() {
 
     useEffect(() => {
         async function getAllDataDash() {
-            const allUsers = await getAllUsersCount();
+            if (user?.permission === "admin") {
+                const allUsers = await getAllUsersCount();
+                const allPasswdsByAdmin = await getAllPasswdAdminCount();
+                
+                setPasswordCountAllUsers(allPasswdsByAdmin.data[0].count);
+                setUserCount(allUsers.data[0].count);
+            }
+
             const allPasswds = await getAllPasswdCount();
-            const allPasswdsByAdmin = await getAllPasswdAdminCount();
             const getDataUser = await getProfileUser(String(user?.id));
-            setNameUser(getDataUser.data[0].user.name)
-            setUserCount(allUsers.data[0].count);
+            setNameUser(getDataUser.data[0].user.name);
             setPasswordCount(allPasswds.data[0].count);
-            setPasswordCountAllUsers(allPasswdsByAdmin.data[0].count);
         }
 
         getAllDataDash();

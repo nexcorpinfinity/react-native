@@ -59,10 +59,9 @@ export default function CreateUser() {
                     String(id)
                 );
 
-                if (
-                    updatePorfileForAdmin.msg ===
-                    "Usuário atualizado com sucesso!"
-                ) {
+                console.log(updatePorfileForAdmin);
+
+                if (updatePorfileForAdmin.success) {
                     return router.push("/(tabs)/configuration/users");
                 }
             }

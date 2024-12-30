@@ -3,6 +3,8 @@ import { jwtDecode } from "jwt-decode";
 import { useRouter } from "expo-router";
 import { loginApi } from "../service/users";
 import {
+    deleteCredentials,
+    deleteSecureCode,
     deleteToken,
     getCredentials,
     getToken,
@@ -207,7 +209,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         await deleteToken("token");
 
         setUser(null);
-
+        deleteSecureCode();
+        deleteCredentials();
+        
         router.replace("/(auth)/login");
 
         setLoading(false);

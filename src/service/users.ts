@@ -93,24 +93,24 @@ async function updateProfile(
 ) {
     try {
         if (id) {
-            const data = await api.put(`/users?id=${id}`, {
+            const { data } = await api.put(`/users?id=${id}`, {
                 name: updateData.name,
                 email: updateData.email,
                 password: updateData.password,
                 permission: updateData.permission,
             });
 
-            return data.data;
+            return data;
         }
 
-        const data = await api.put(`/users`, {
+        const { data } = await api.put(`/users`, {
             name: updateData.name,
             email: updateData.email,
             password: updateData.password,
             permission: updateData.permission,
         });
 
-        return data.data;
+        return data;
     } catch (error) {
         console.log(error);
     }

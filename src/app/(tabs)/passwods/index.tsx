@@ -124,9 +124,16 @@ export default function MyPasswd() {
 
     const createHashCode = async (createCode: string) => {
         try {
+            if (!createCode) {
+                return Alert.alert("Por favor digite o codigo");
+            }
+
+            if (createCode.length < 4) {
+                return Alert.alert("O código precisa ter no minímo 4 digitos");
+            }
             const createdCodeAPI = await createSecureCode(String(createCode));
 
-            if (!createdCodeAPI.data.success) {
+            if (createdCodeAPI.data.success === false) {
                 return Alert.alert("Error desconhecido, consulte o admin");
             }
 
@@ -211,7 +218,7 @@ export default function MyPasswd() {
                 login_email: "",
                 password: "",
             });
-
+            getAllPasswds();
             return Toast.show({
                 type: "success",
                 text1: "Senha criada com sucesso",
