@@ -142,6 +142,7 @@ export default function MyPasswd() {
             });
 
             setModalCreatedSecureCode(false);
+            getAllPasswds();
         } catch (error) {
             Toast.show({
                 type: "error",
@@ -176,6 +177,7 @@ export default function MyPasswd() {
 
             setSendCodeForGetHashCode("");
             setModalGetSecureCode(false);
+            getAllPasswds();
         } catch (error) {
             Toast.show({
                 type: "error",
